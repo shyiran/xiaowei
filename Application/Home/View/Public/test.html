@@ -1,0 +1,145 @@
+<extend name="Layout/ins_page" />
+<block name="content">
+	<style>
+		#bbb .btn {
+			margin-bottom: 7px;
+			margin-right: 5px;
+		}
+	</style>
+	<div class="Public container form-horizontal">
+		<div class="form-inline form-group">
+			<div class="input-group" id="aaa">
+				<div class="input-group-btn">
+					<button tabindex="-1" class="btn btn-white" type="button">
+						机场运行突发事件
+					</button>
+					<button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+						<span class="caret"><i class=""></i></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">民用航空器事故</a>
+						</li>
+						<li>
+							<a href="#">民用航空器事故征候</a>
+						</li>
+						<li>
+							<a href="#">民用航空器一般事件</a>
+						</li>
+						<li>
+							<a href="#">民用航空地面事故</a>
+						</li>
+						<li>
+							<a href="#">劫机炸机事件</a>
+						</li>
+						<li>
+							<a href="#">机场运行突发事件</a>
+						</li>
+						<li>
+							<a href="#">民用航空地面事故</a>
+						</li>
+						<li>
+							<a href="#">民用航空地面事故</a>
+						</li>
+						<li>
+							<a href="#">民用航空地面事故</a>
+						</li>
+					</ul>
+				</div>
+				<span class="form-control-static col-3 inline text-center"><i class="fa fa-angle-right"></i></span>
+				<div class="input-group-btn">
+					<button tabindex="-1" class="btn btn-white" type="button">
+						飞行保障突发事件
+					</button>
+					<button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+						<span class="caret"><i class=""></i></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">Action</a>
+						</li>
+						<li>
+							<a href="#">Another action</a>
+						</li>
+						<li>
+							<a href="#">Something else here</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#">Separated link</a>
+						</li>
+					</ul>
+				</div>
+				<span class="form-control-static col-3 inline text-center"><i class="fa fa-angle-right"></i></span>
+				<div class="input-group-btn">
+					<button tabindex="-1" class="btn btn-white" type="button">
+						跑道突发事件
+					</button>
+					<button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+						<span class="caret"><i class=""></i></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">Action</a>
+						</li>
+						<li>
+							<a href="#">Another action</a>
+						</li>
+						<li>
+							<a href="#">Something else here</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#">Separated link</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="form-group form-inline" id="bbb">
+			<a class="btn btn-primary" data="1">a </a>
+			<a class="btn btn-primary" data="2">b </a>
+			<a class="btn btn-primary" data="3">c </a>
+			<a class="btn btn-primary" data="4">d </a>
+			<a class="btn btn-primary" data="5">e </a>
+			<a class="btn btn-primary" data="6">f </a>
+			<a class="btn btn-primary" data="7">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="8">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="9">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="10">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="11">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="12">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="13">飞行保障突发事件 </a>
+			<a class="btn btn-primary" data="14">飞行保障突发事件 </a>
+		</div>
+	</div>
+
+	<div class="input-group-btn" id="tpl_input">
+		<a class="btn btn-white name" type="button"> 飞行保障突发事件 </a>
+		<button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button" aria-expanded="false">
+			<span class="caret"><i class=""></i></span>
+		</button>
+		<ul class="dropdown-menu">
+		</ul>
+	</div>
+	<span id="tpl_split" class="form-control-static col-3 inline text-center"><i class="fa fa-angle-right"></i></span>
+</block>
+<block name="js">
+	<script type="text/javascript">
+		$('.form-group .btn').click(function() {
+			$html = $('#tpl_input').clone();
+			$(".name", $html).text($(this).text());
+
+			$("#bbb a").each(function() {
+				$li=$('<li></li>');
+				$li.append($(this).clone().removeClass('btn btn-primary'));				
+				$('.dropdown-menu').append($li);				
+			});
+
+			$("#aaa").append($('#tpl_split').clone());
+			$("#aaa").append($html);			
+
+		});
+
+	</script>
+</block>

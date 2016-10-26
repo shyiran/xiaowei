@@ -1,0 +1,43 @@
+<extend name="Layout/ins_base" />
+<block name="content">
+	<div class="middle-box text-center loginscreen   animated fadeInDown">
+		<div>
+			<h3>小微OA</h3>
+			<p>
+				创建账户
+			</p>
+			<form class="m-t" role="form" id="form_data">
+				<input type="hidden" name="data" value="{$data}">
+				<div class="form-group">
+					<input type="text" disabled="disabled" class="form-control" value="登录名：{$data}"  />
+				</div>
+				<div class="form-group">
+					<input type="text" disabled="disabled" class="form-control"value="密码：{$data}"/>
+				</div>
+				<div class="form-group">
+					<input type="text" placeholder="请输入手机号" name="mobile_tel" check="require" msg="请输入手机号" class="form-control"/>
+				</div>
+				<button type="button" onclick="save()" class="btn btn-primary block full-width m-b">
+					注册
+				</button>
+			</form>
+		</div>
+	</div>
+</block>
+<block name="js">
+	<script type="text/javascript">
+		function save() {
+			var vars = $('#form_data').serialize();
+			if (check_form("form_data")) {
+				sendAjax("{:U('sign_up_save')}", vars, function(data) {
+					if (data.status) {
+						location.href = "{:U('sign_up_show')}&data=" + data.data + "&tel=" + data.tel;
+					} else {
+						ui_error(data.info);
+					}
+				});
+			}
+		}
+
+	</script>
+</block>

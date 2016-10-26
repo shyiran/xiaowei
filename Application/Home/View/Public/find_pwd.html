@@ -1,0 +1,137 @@
+<extend name="Layout/ins_base" />
+<block name="content">
+	{:W('PageHeader/simple',array('name'=>'找回密码','search'=>'N'))}
+	<form id="form_password" method="post" action="" class="form-horizontal well">
+		<input type="hidden" name="ajax" id="ajax" value="1">
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="emp_no">员工编号：</label>
+			<div class="col-sm-10">
+				<input class="form-control col-20" type="text" name="emp_no" id="emp_no" value=""  >
+				<a onclick="send_sms_verify(this)">发送验证码到手机</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="list_rows">验证码：</label>
+			<div class="col-sm-10">
+				<input class="form-control col-20" type="text" name="verify_no" id="verify_no" value=""  >
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="list_rows">新密码：</label>
+			<div class="col-sm-10">
+				<input class="form-control col-20" type="password" name="password" id="password" value=""  >
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-10 col-sm-offset-2" id="msg">
+				&nbsp;
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-10 col-sm-offset-2">
+				<a onclick="save()"  class="btn btn-sm btn-primary">提交</a>
+			</div>
+		</div>
+	</form>
+</block>
+<block name="js">
+	<script type="text/javascript">
+		var countdown = 60;
+		var is_send = false;
+		function send_sms_verify(obj) {
+			if (is_send) {
+				return false;
+			}
+			vars = 'emp_no=' + $("#emp_no").val();
+			sendAjax("{:U('send_sms_verify')}", vars, function(data) {
+				if (data.status) {
+					is_send = true;
+					$int = setInterval(function() {
+						obj.setAttribute("disabled", true);
+						obj.text = "已发送,请等待(" + countdown + ")";
+						countdown--;
+						if (countdown == 0) {
+							obj.text = "发送验证码到手机";
+							clearInterval($int);
+							countdown = 60;
+							is_send = false;
+						}
+					}, 1000);
+				} else {
+					ui_error(data.info);
+					return false;
+				}
+			});
+		}
+
+		function check_password(s) {
+			if (s.length < 4) {
+				return 0;
+			}
+			var ls = 0;
+			if (s.match(/[a-z]/ig)) {
+				ls++;
+			}
+			if (s.match(/[0-9]/ig)) {
+				ls++;
+			}
+			if (s.match(/(.[^a-z0-9])/ig)) {
+				ls++;
+			}
+			if (s.length < 6 && ls > 0) {
+				ls--;
+			}
+			return ls;
+		}
+
+		function save() {
+			var vars = $("#form_password").serialize();
+			sendAjax("{:U('find_pwd')}", vars, function(data) {
+				if (data.status) {
+					ui_alert(data.info, function() {
+						window.open("{:U('login')}", "_self");
+					});
+				} else {
+					ui_error(data.info);
+				}
+			});
+		}
+
+
+		$(document).ready(function() {
+			$("#password").keydown(function() {
+				s = $(this).val();
+				t = check_password(s);
+				if (t == 0) {
+					$("#msg").html("密码过短");
+					$("#msg").css("color", "red");
+				}
+				if (t == 1) {
+					$("#msg").html("密码强度差");
+					$("#msg").css("color", "red");
+				}
+				if (t == 2) {
+					$("#msg").html("密码强度良好");
+					$("#msg").css("color", "blue");
+				}
+				if (t == 3) {
+					$("#msg").html("密码强度高");
+					$("#msg").css("color", "blue");
+				}
+			});
+
+			$("#confirm_password").keyup(function() {
+				new_pwd = $("#password").val();
+				confirm_pwd = $(this).val();
+				if (new_pwd != confirm_pwd) {
+					$("#msg").html("密码不一致");
+					$("#msg").css("color", "red");
+				} else {
+					$("#msg").html("密码一致");
+					$("#msg").css("color", "blue");
+					$("#status").val("true");
+				}
+			});
+		});
+	</script>
+</block>

@@ -1,0 +1,35 @@
+<extend name="Layout/ins_base" />
+<block name="content">
+	 <div class="middle-box text-center loginscreen   animated fadeInDown">
+        <div>
+            <div>
+                <h3>小微OA</h3>
+               <h2> <div class="alert alert-success" role="alert">
+                  创建成功!
+                </div></h2>
+            </div>
+            
+            <p></p>
+            <form class="m-t" role="form" id="form_data">
+                <div class="form-group">
+                    <input type="text" disabled="disabled" class="form-control" value="登录名：{$data['data']}"  />
+                </div>
+                 <div class="form-group">
+                    <input type="text" disabled="disabled" class="form-control"value="密码：{$data['data']}"/>
+                </div>
+                <div class="form-group">
+                    <input type="text" disabled="disabled" name="mobile_tel" value="手机号：{$data['mobile_tel']}" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    请用微信扫描下方二维码
+                </div>
+               <div class="form-group">
+                    <img src="/Public/Ins/img/ewm.png">
+                </div>
+
+               
+            </form>
+            
+        </div>
+    </div>
+</block>
