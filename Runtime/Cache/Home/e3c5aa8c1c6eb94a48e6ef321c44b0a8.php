@@ -1,0 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); if(($readonly) == "true"): ?><input class="hidden form-control" type="text" name="udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" >
+	<input disabled="disabled" class="form-control" type="text" name="disabled_udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" <?php if(!empty($validate)): ?>check="<?php echo ($validate); ?>" msg="<?php echo ($msg); ?>"<?php endif; ?>>
+	<?php else: ?>
+	<input class="form-control" type="text" name="udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" <?php if(!empty($validate)): ?>check="<?php echo ($validate); ?>" msg="<?php echo ($msg); ?>"<?php endif; ?>><?php endif; ?>

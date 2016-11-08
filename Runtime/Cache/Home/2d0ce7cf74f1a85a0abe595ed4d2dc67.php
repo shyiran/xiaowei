@@ -1,0 +1,4 @@
+<?php if (!defined('THINK_PATH')) exit(); if(($readonly) == "true"): ?><input class="hidden form-control input-date" type="text" name="udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" >
+	<input readonly="readonly"  class="form-control input-date-readonly" type="text" name="disabled_udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" <?php if(!empty($validate)): ?>check="<?php echo ($validate); ?>" msg="<?php echo ($msg); ?>"<?php endif; ?>  >
+	<?php else: ?>
+	<input readonly="readonly" class="form-control input-date" type="text" name="udf_field_<?php echo ($id); ?>" id="udf_field_<?php echo ($id); ?>" value="<?php echo ($val); ?>" <?php if(!empty($validate)): ?>check="<?php echo ($validate); ?>" msg="<?php echo ($msg); ?>"<?php endif; ?>  ><?php endif; ?>

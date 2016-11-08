@@ -24,7 +24,7 @@ return array(
     'ADMIN_USER_LIST'	=>'admin',        
     'USER_AUTH_GATEWAY'	=>'public/login',// 默认认证网关
 
-    'SHOW_PAGE_TRACE'=>0, //显1示调试信息
+    'SHOW_PAGE_TRACE'=>1, //显1示调试信息
  
     /* 系统数据加密设置 */
     'DATA_AUTH_KEY'		=> '1*NX+Jds|p!IFqltgD)"?4;ic<{,wuya239Ax^]-', //默认数据加密KEY        
