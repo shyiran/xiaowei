@@ -202,8 +202,7 @@ class IndexController extends HomeController {
 
 		$map['_string'] = " Info.is_public=1 or Info.dept_id=$dept_id ";
 
-		$info_list = M("InfoScope") -> where("user_id=$user_id") -> getField('info_id', true);	
-
+		$info_list = M("InfoScope") -> where("user_id=$user_id") -> getField('info_id', true);		
 			$info_list = implode(",", $info_list);
 
 			if (!empty($info_list)) {

@@ -91,75 +91,127 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/simple',array('name'=>'权限组管理','search'=>'N'));?>
-
-	<div class="operate panel panel-default">
-		<div class="panel-body">
-			<div class="pull-right">
-				<a onclick="add()" class="btn btn-sm btn-primary">新增</a>
-				<a onclick="save()" class="btn btn-sm btn-primary">保存</a>
-				|
-				<a onclick="del()" class="btn btn-sm btn-danger">删除</a>
+	<?php echo W('PageHeader/adv_search',array('name'=>'记账明细'));?>
+	<form method="post" name="form_adv_search" id="form_adv_search">
+		<div class="adv_search panel panel-default  hidden"  id="adv_search">
+			<div class="panel-heading">
+				<div class="row">
+					<h4 class="col-xs-6">高级搜索</h4>
+					<div class="col-xs-6 text-right">
+						<a  class="btn btn-sm btn-info" onclick="submit_adv_search();">搜索</a>
+						<a  class="btn btn-sm " onclick="close_adv_search();">关闭</a>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
-	<!-- 功能操作区域结束 -->
-	<!-- 列表显示区域  -->
-	<div class="row">
-		<div class="col-sm-4 sub_left_menu ">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>名称</th>
-						<th>状态</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$data): $mod = ($i % 2 );++$i;?><tr id="<?php echo ($data["id"]); ?>">
-							<td><?php echo ($data["name"]); ?></td>
-							<td><?php echo (status($data["is_del"])); ?></td>
-						</tr><?php endforeach; endif; else: echo "" ;endif; ?>
-				</tbody>
-			</table>
-			
-		</div>
-
-		<div class="col-sm-8 last sub_content">
-			<form id="form_data" name="form_data"method="post" class="well form-horizontal clearfix">
-				<input type="hidden" name="id" id="id">
-				<input type="hidden" name="ajax" id="ajax" value="0">
-				<input type="hidden" name="opmode" id="opmode" value="">
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="name">名称*：</label>
+			<div class="panel-body">
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="eq_account_id">账户：</label>
 					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="name" name="name" check="require" msg="请输入名称">
-					</div>
-				</div>
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="sort">排序：</label>
-					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="sort" name="sort" >
-					</div>
-				</div>
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="is_del">状态：</label>
-					<div class="col-sm-8">
-						<select  class="form-control" name="is_del" id="is_del">
-							<option  value="0">启用</option>
-							<option value="1">禁用</option>
+						<select id="account_id" name="eq_account_id" class="form-control">
+							<option value="">请选择</option>
+							<?php echo fill_option($account_list);?>
 						</select>
 					</div>
 				</div>
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="remark" >备注：</label>
-					<div class="col-sm-8" >
-						<textarea class="form-control" name="remark" id="remark" rows="5" class="col-xs-12" ></textarea>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_type">类别：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_type" name="li_type" >
 					</div>
 				</div>
-			</form>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_remark">摘要：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_remark" name="li_remark" >
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_content">客户/供应商：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_partner" name="li_partner" >
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="be_create_time">登录时间：</label>
+					<div class="col-sm-8">
+						<div class="input-daterange input-group" >
+							<input type="text" class="input-sm form-control text-center" name="be_input_date" readonly="readonly"/>
+							<span class="input-group-addon">-</span>
+							<input type="text" class="input-sm form-control text-center" name="en_input_date" readonly="readonly"/>
+						</div>
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_content">经办：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_actor_name" name="li_actor_name" >
+					</div>
+				</div>
+			</div>
 		</div>
+	</form>
+	<div class="space-8"></div>
+	<?php if($auth['write']): ?><div class="operate panel panel-default">
+			<div class="panel-body">
+				<div class="pull-right">
+					<a class="btn btn-sm btn-primary" href="<?php echo U('account_list');?>" >账户管理</a>
+					<a class="btn btn-sm btn-primary" onclick="add_income()">记收入</a>
+					<a class="btn btn-sm btn-primary" onclick="add_payment()">记支出</a>
+					<a class="btn btn-sm btn-primary" onclick="add_transfer()">记转账</a>
+				</div>
+			</div>
+		</div><?php endif; ?>
+	<div class="ul_table">
+		<ul>
+			<li class="thead">
+				<span class="col-8 text-center">单据编号</span>
+				<span class="col-8 text-center">日期</span>
+				<div class="pull-right">
+					<span class="col-8 ">账户</span>
+					<span class="col-10 text-right">收入</span>
+					<span class="col-10 text-right">支出</span>
+					<span class="col-10 text-right">合计</span>
+					<span class="col-10 text-center">类别</span>
+					<span class="col-10  text-center">客户/供应商</span>
+					<span class="col-6  text-center">经办</span>
+					<span class="col-6  text-center">录入</span>
+				</div>
+				<span class="auto autocut">摘要 </span>
+			</li>
+			<?php if(empty($list)): ?><li class="no-data">
+					没找到数据
+				</li>
+				<?php else: ?>
+				<?php if(is_array($list)): foreach($list as $key=>$vo): ?><li class="tbody data_item">
+						<span class="col-8 text-center"><?php echo ($vo["doc_no"]); ?></span>
+						<span class="col-8 text-center"><?php echo ($vo["input_date"]); ?></span>
+						<div class="pull-right">
+							<span class="col-8 "><?php echo ($vo["account_name"]); ?></span>
+							<span class="col-10 text-right data data_1"><?php echo ((isset($vo["income"]) && ($vo["income"] !== ""))?($vo["income"]):0); ?></span>
+							<span class="col-10 text-right data data_2"><?php echo ((isset($vo["payment"]) && ($vo["payment"] !== ""))?($vo["payment"]):0); ?></span>
+							<span class="col-10 text-right data data_3"><?php echo ($vo['income']-$vo['payment']); ?></span>
+							<span class="col-10 text-center"><?php echo ($vo["type"]); ?></span>
+							<span class="col-10 text-center"><?php echo ($vo["partner"]); ?>&nbsp;</span>
+							<span class="col-6 text-center"><?php echo ($vo["actor_name"]); ?></span>
+							<span class="col-6 text-center"><?php echo ($vo["user_name"]); ?></span>
+						</div>
+						<span class="auto autocut"><a href="<?php echo U('read','id='.$vo['id']);?>"><?php echo ($vo["remark"]); ?></a></span>
+					</li><?php endforeach; endif; ?>
+				<li class="tbody data_total">
+					<span class="col-8 text-center">合计</span>
+					<span class="col-8 text-center">&nbsp;</span>
+					<div class="pull-right">
+						<span class="col-10 text-right data data_1"></span>
+						<span class="col-10 text-right data data_2"></span>
+						<span class="col-10 text-right data data_3"></span>
+						<span class="col-32 text-center">&nbsp;</span>
+					</div>
+				</li>
+				<div class="pagination">
+					<?php echo ($page); ?>
+				</div><?php endif; ?>
+		</ul>
+	</div>
 
 				</div>
 			</div>
@@ -248,46 +300,106 @@
 </script>
 		
 	<script type="text/javascript">
-		function add() {
-			winopen("<?php echo U('add',array('controller'=>$controller));?>",560, 470);
-		};
-
-		function del() {
-			var vars = $("#form_data").serialize();
-			ui_confirm('确定要删除吗?', function() {
-				sendAjax("<?php echo U('del');?>", vars, function(data) {
-					if (data.status) {
-						ui_alert(data.info, function() {
-							location.reload(true);
-						});
-					}
-				});
-			});
-		}
-
-		function save() {
-			sendForm("form_data", "<?php echo U('save');?>");
-		}
-
-		function showdata(result) {
-			for (var s in result.data) {
-				set_val(s, result.data[s]);
-			}
-			$("#opmode").val("edit");
-		}
-
-
 		$(document).ready(function() {
 			set_return_url();
-			$(".sub_left_menu tbody tr").click(function() {
-				$(".sub_left_menu  tr.active").removeClass("active");
-				$(this).attr("class", "active");
-				sendAjax("<?php echo U('read');?>", "id=" + $(this).attr("id"), function(data) {
-					showdata(data);
-				});
-				return false;
-			});
+			total_init();
 		});
+
+		function total_init() {
+			for (var i = 1; i < 11; i++) {
+				total = 0;
+				item_selecter = ".data_item .data_" + i;
+
+				$(item_selecter).each(function() {
+					total = dec_add(total, $(this).text());
+				});
+				total_selecter = ".data_total .data_" + i;
+				$(total_selecter).text(total);
+			}
+			$(".ul_table .data").each(function() {
+				$(this).text(formatMoney($(this).text()));
+			});
+		}
+
+		function dec_add(num1, num2) {
+			var reg = /\./i;
+			if (!reg.test(num1) && !reg.test(num2)) {
+				return parseInt(num1) + parseInt(num2);
+			}
+			var r1 = 0, r2 = 0, m;
+			var str1 = num1.toString(), str2 = num2.toString();
+			if (str1.indexOf('.') > -1) {
+				r1 = str1.split('.')[1].length;
+			}
+			if (str2.indexOf('.') > -1) {
+				r2 = str2.split('.')[1].length;
+			}
+			m = Math.pow(10, Math.max(r1, r2));
+			return (dec_mul(num1, m) + dec_mul(num2, m)) / m;
+		}
+
+		function dec_mul(num1, num2) {
+
+			var t1 = 0, t2 = 0, r1, r2;
+			try {
+				t1 = num1.toString().split(".")[1].length;
+			} catch(e) {
+				t1 = 0;
+			}
+			try {
+				t2 = num2.toString().split(".")[1].length;
+			} catch(e) {
+				t2 = 0;
+			}
+			with (Math) {
+				r1 = Number(num1.toString().replace(".", ""));
+				r2 = Number(num2.toString().replace(".", ""));
+				return (r1 * r2) / pow(10, t2 + t1);
+			}
+		}
+
+		function formatMoney(numStr, separator) {
+			s = numStr;
+			if (/[^0-9\.\-]/.test(s))
+				return "　";
+			s = s.replace(/^(-)?(\d*)$/, "$1$2.");
+			s = (s + "00").replace(/(-)?(\d*\.\d\d)\d*/, "$1$2");
+			s = s.replace(".", ",");
+			var re = /(\d)(\d{3},)/;
+			while (re.test(s))
+			s = s.replace(re, "$1,$2");
+			s = s.replace(/,(\d\d)$/, ".$1");
+			return s.replace(/^\./, "0.");
+		}
+
+		function formatQty(numStr, separator) {
+			s = numStr;
+			if (/[^0-9\.\-]/.test(s))
+				return "　";
+			s = s.replace(/^(-)?(\d*)$/, "$1$2.");
+			s = (s + "00").replace(/(-)?(\d*\.\d\d)\d*/, "$1$2");
+			s = s.replace(".", ",");
+			var re = /(\d)(\d{3},)/;
+			while (re.test(s))
+			s = s.replace(re, "$1,$2");
+			s = s.replace(/,(\d\d)$/, ".$1");
+			s = s.replace(/^\./, "0.");
+			if (s.split(".")[1] == "00")
+				s = s.split(".")[0];
+			return s;
+		}
+
+		function add_income() {
+			window.open("<?php echo U('add_income');?>", "_self");
+		}
+
+		function add_payment() {
+			window.open("<?php echo U('add_payment');?>", "_self");
+		}
+
+		function add_transfer() {
+			window.open("<?php echo U('add_transfer');?>", "_self");
+		}
 	</script>
 
 	</body>

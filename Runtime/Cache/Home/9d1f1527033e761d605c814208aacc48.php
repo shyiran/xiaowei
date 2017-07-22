@@ -91,59 +91,55 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/simple',array('name'=>'邮件帐户设置','search'=>'N'));?>
+	<?php echo W('PageHeader/simple',array('name'=>'账户设置'));?>
+	<div class="space-8"></div>
+	<?php if($auth['write']): ?><div class="operate panel panel-default">
+			<div class="panel-body">
+				<div class="pull-left">
+					<a class="btn btn-sm btn-primary" href="<?php echo U('index');?>">返回</a>
+				</div>
+				<div class="pull-right">
+					<a class="btn btn-sm btn-primary" onclick="add()">新建</a>
+				</div>
+			</div>
+		</div><?php endif; ?>
+	<div class="ul_table">
+		<ul>
+			<li class="thead">
+				<span class="col-10 ">账户名称</span>
+				<span class="col-8 ">日期</span>
+				<span class="col-20 ">开户银行</span>
+				<span class="col-20 ">帐号</span>
+				<span class="col-8 text-center">初始金额</span>
+				<span class="col-8 text-center">账户余额</span>
+				<div class="pull-right">
+					<span class="col-8 text-center">操作</span>
+				</div>
+				<span class="auto autocut">备注 </span>
+			</li>
+			<?php if(empty($list)): ?><li class="no-data">
+					没找到数据
+				</li>
+				<?php else: ?>
+				<?php if(is_array($list)): foreach($list as $key=>$vo): ?><li class="tbody">
+						<span class="col-10 "><a href="<?php echo U('edit_account','account_id='.$vo['id']);?>"><?php echo ($vo["name"]); ?></a></span>
+						<span class="col-8"><?php echo (to_date($vo["create_time"],'Y-m-d')); ?></span>
+						<span class="col-20 "><?php echo ($vo["bank"]); ?></span>
+						<span class="col-20 "><?php echo ($vo["no"]); ?></span>
+						<span class="col-8 text-center"><?php echo ($vo["init"]); ?></span>
+						<span class="col-8 text-center"><?php echo ($vo["balance"]); ?></span>
+						<div class="pull-right">
+							<span class="col-8 text-center"><a onclick="del(<?php echo ($vo["id"]); ?>);">删除</a></span>
+						</div>
+						<span class="auto autocut"><?php echo ($vo["remark"]); ?> </span>
 
-	<form method='post' id="form_data" class="well form-horizontal clearfix">
-		<input type="hidden" id="ajax" name="ajax" value="1">
-		<input type="hidden" id="opmode" name="opmode" value="<?php echo ($opmode); ?>">
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="mail_name">邮件显示名称*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="mail_name" id="mail_name" name="mail_name" check="require" msg="请输入显示名称" value="<?php echo ($mail_user["mail_name"]); ?>" >
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="email">邮件地址*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="email" id="email" name="email" check="require" msg="请输入显示名称" value="<?php echo ($mail_user["email"]); ?>" >
-			</div>
-		</div>
+					</li><?php endforeach; endif; ?>
+				<div class="pagination">
+					<?php echo ($page); ?>
+				</div><?php endif; ?>
+		</ul>
+	</div>
 
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="pop3svr">接收服务器*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="pop3svr" id="pop3svr" name="pop3svr" check="require" msg="请输入接收服务器" value="<?php echo ($mail_user["pop3svr"]); ?>" >
-				<span class="help-inline">例如：pop.163.com</span>
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="smtpsvr">发送服务器*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="smtpsvr" id="smtpsvr" name="smtpsvr" check="require" msg="请输入接收服务器" value="<?php echo ($mail_user["smtpsvr"]); ?>" >
-				<span class="help-inline">例如：smtp.163.com</span>
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="mail_id">用户名*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="smtpsvr" id="mail_id" name="mail_id" check="require" msg="请输入用户名" value="<?php echo ($mail_user["mail_id"]); ?>" >
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-3 control-label" for="mail_pwd">密码*：</label>
-			<div class="col-sm-9">
-				<input class="form-control" type="password" id="mail_pwd" name="mail_pwd" check="require" msg="请输入用户名" value="<?php echo ($mail_user["mail_pwd"]); ?>" >
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="action col-sm-9 col-sm-offset-3">
-				<input class="btn btn-sm btn-primary" type="button" value="保存" onclick="save();">
-			</div>
-		</div>
-	</form>
 
 				</div>
 			</div>
@@ -232,9 +228,20 @@
 </script>
 		
 	<script type="text/javascript">
-		function save() {
-			sendForm("form_data","<?php echo U('save');?>","<?php echo U('index');?>");
+		$(document).ready(function() {
+			set_return_url(location.href,1);
+		});
+
+		function add() {
+			window.open("<?php echo U('add_account');?>", "_self");
 		}
+
+		function del(id) {
+			ui_confirm('确定要删除吗?', function() {
+				window.open(fix_url("<?php echo U('del_account');?>?account_id=" + id), "_self");
+			});
+		};
+
 	</script>
 
 	</body>

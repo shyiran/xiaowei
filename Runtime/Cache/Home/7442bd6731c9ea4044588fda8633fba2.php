@@ -91,60 +91,132 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/search',array('name'=>'流程管理','search'=>'S'));?>
-	<!--  功能操作区域  -->
+	<input type="hidden" name="ajax" id="ajax" value="1">
+	<select name="folder_list" id="folder_list" class="hidden">
+		<option value="0">根节点</option>
+		<?php echo fill_option($folder_list);?>
+	</select>
+	<?php echo W('PageHeader/simple',array('name'=>$folder_name,'search'=>'N'));?>
 	<div class="operate panel panel-default">
 		<div class="panel-body">
-			<div class="pull-left" >
-				<div class="btn-group">
-					<a class="btn btn-sm btn-primary  dropdown-toggle" data-toggle="dropdown" href="#"> 移动到 <span class="fa fa-caret-down"></span> </a>
-					<ul class="dropdown-menu">
-						<?php if(is_array($tag_list)): foreach($tag_list as $key=>$vo): ?><li onclick="move_to('<?php echo ($key); ?>');">
-								<a><?php echo ($vo); ?></a>
-							</li><?php endforeach; endif; ?>
-					</ul>
-				</div>
-				<a class="btn btn-sm btn-danger" onclick="del();">删除</a>
-			</div >
 			<div class="pull-right">
-				<a  onclick="add();" class="btn btn-sm btn-primary">新建</a>
+				<a onclick="add_folder()" class="btn btn-sm btn-primary">新增</a>
+				<a onclick="save()" class="btn btn-sm btn-primary">保存</a>
+				|
+				<a onclick="del()" class="btn btn-sm btn-danger">删除</a>
 			</div>
 		</div>
 	</div>
-	<!-- 功能操作区域结束 -->
-	<div class="ul_table border-bottom ul_table_responsive">
-		<ul>
-			<li class="thead"  >
-				<label class="inline pull-left col-3">
-					<input class="ace" type="checkbox" name="id-toggle-all" id="id-toggle-all" />
-					<span class="lbl"></span></label>
-				<span class="col-14">分组 </span>
-				<div class="pull-right">
-					<span  class="col-25">文档编号规则</span>
-					<span class="col-6 text-center">状态</span>
-					<span class="col-6 text-center">字段管理</span>
+	<div class="row">
+		<div class="col-sm-4 sub_left_menu ">
+			<div class="well">
+				<?php echo $menu ?>
+			</div>
+		</div>
+		<div class="col-sm-8">
+			<form id="form_data" name="form_data" method="post" class="well form-horizontal clearfix">
+				<input type="hidden" name="id" id="id" >
+				<input type="hidden" name="opmode" id="opmode" value="">
+				<input type="hidden" name="admin" id="admin">
+				<input type="hidden" name="write" id="write">
+				<input type="hidden" name="read" id="read">
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="name">名称*：</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" id="name" name="name" check="require" msg="请输入名称">
+					</div>
 				</div>
-				<span class="autocut auto">名称</span>
-			</li>
-			<?php if(empty($list)): ?><li class="no-data">
-					没找到数据
-				</li>
-				<?php else: ?>
-				<form method="post" action="" name="form_data" id="form_data">
-					<?php if(is_array($list)): foreach($list as $key=>$vo): ?><li class="tbody" >
-							<label class="inline pull-left col-3">
-								<input class="ace" type="checkbox" name="id[]" value="<?php echo ($vo["id"]); ?>" />
-								<span class="lbl"></span></label>
-							<span  class="col-14" ><?php echo ($vo["tag_name"]); ?>&nbsp;</span>
-							<div class="pull-right">
-								<span class="col-25"><?php echo ($vo["doc_no_format"]); ?>&nbsp;</span>
-								<span class="col-6 text-center"  ><?php echo (status($vo["is_del"])); ?>&nbsp;</span>
-								<a class="col-6 text-center" href="<?php echo U('Flow/field_manage','row_type='.$vo['id']);?>">字段管理</a></span>
-							</div >
-							<span class="autocut auto"><a href="<?php echo U('edit','id='.$vo['id']);?>"><?php echo ($vo["name"]); ?>&nbsp;</a></span>
-						</li><?php endforeach; endif; ?>
-				</form><?php endif; ?>
-		</ul>
+				<?php if($has_pid): ?><div class="form-group">
+						<label class="col-sm-3 control-label" for="folder_name">父节点*：</label>
+						<div class="col-sm-9">
+							<div class="input-group">
+								<input type="hidden" name="pid" id="pid">
+								<input name="folder_name" class="form-control val" id="folder_name" type="text" msg="请选择父节点" check="require" />
+								<span class="input-group-btn">
+									<button class="btn btn-sm btn-primary" onclick="select_pid()" type="button">
+										选择
+									</button> </span>
+							</div>
+						</div>
+					</div><?php endif; ?>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="folder_name">管理：</label>
+					<div class="col-sm-9">
+						<div id="admin_list" class="inputbox">
+							<a class="pull-right btn btn-link text-center" onclick="select_auth();"> <i class="fa fa-user"></i> </a>
+							<div class="wrap" >
+								<span class="address_list"></span>
+								<span class="text" >
+									<input class="letter" type="text"  >
+								</span>
+							</div>
+							<div class="search dropdown ">
+								<ul class="dropdown-menu"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="folder_name">写入 / 修改：</label>
+					<div class="col-sm-9">
+						<div id="write_list" class="inputbox">
+							<a class="pull-right btn btn-link text-center" onclick="select_auth();"> <i class="fa fa-user"></i> </a>
+							<div class="wrap" >
+								<span class="address_list"></span>
+								<span class="text" >
+									<input class="letter" type="text"  >
+								</span>
+							</div>
+							<div class="search dropdown ">
+								<ul class="dropdown-menu"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="folder_name">读取：</label>
+					<div class="col-sm-9">
+						<div id="read_list" class="inputbox">
+							<a class="pull-right btn btn-link text-center" onclick="select_auth();"> <i class="fa fa-user"></i> </a>
+							<div class="wrap" >
+								<span class="address_list"></span>
+								<span class="text" >
+									<input class="letter" type="text"  >
+								</span>
+							</div>
+							<div class="search dropdown ">
+								<ul class="dropdown-menu"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="sort">排序：</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" id="sort" name="sort" >
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="sort">状态：</label>
+					<div class="col-sm-9">
+						<select class="form-control"  name="is_del" id="is_del">
+							<option  value="0">启用</option>
+							<option value="1">禁用</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="remark" >备注：</label>
+					<div class="col-sm-9" >
+						<textarea class="form-control" name="remark" rows="5" class="col-xs-12" ></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
 
 				</div>
@@ -234,43 +306,98 @@
 </script>
 		
 	<script type="text/javascript">
+		function add_folder() {
+ 			winopen("<?php echo U('SystemFolder/add',array('controller'=>$controller,'has_pid'=>$has_pid));?>",704,570);
+		};
 		function add() {
-			window.open("<?php echo U('add');?>", "_self");
-		}
+			$("#opmode").val("add");
+			$("#id").val("");
+			$("#admin").val("");
+			$("#admin_list span.address_list span").each(function() {
+				$("#admin").val($("#admin").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
+			});
 
-		function btn_search() {
-			$("#form_search").submit();
-		}
+			$("#write").val("");
+			$("#write_list span.address_list span").each(function() {
+				$("#write").val($("#write").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
+			});
+
+			$("#read").val("");
+			$("#read_list span.address_list span").each(function() {
+				$("#read").val($("#read").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
+			});
+			
+			sendForm("form_data", "", "/xiaowei/index.php?m=&c=form&a=folder_manage");
+		};
 
 		function del() {
-			var vars = $("#form_data").serialize();
 			ui_confirm('确定要删除吗?', function() {
-				sendAjax("<?php echo U('del');?>", vars, function(data) {
-					if (data.status) {
-						ui_alert(data.info, function() {
-							location.reload(true);
-						});
-					}
-				});
+				$("#opmode").val("del");
+				sendForm("form_data", "", "/xiaowei/index.php?m=&c=form&a=folder_manage");
 			});
 		}
 
-		function move_to(val) {
-			var vars = $("#form_data").serialize();
-			sendAjax("<?php echo U('move_to');?>", "val=" + val + '&' + vars, function(data) {
-				if (data.status) {
-					ui_alert(data.info, function() {
-						location.reload(true);
-					});
-				} else {
-					ui_alert(data.info);
-				}
+		function save() {
+			if ($("#opmode").val() == "") {
+				ui_error("请选择要保存的数据");
+				return false;
+			}
+			$("#admin").val("");
+			$("#admin_list span.address_list span").each(function() {
+				$("#admin").val($("#admin").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
 			});
+
+			$("#write").val("");
+			$("#write_list span.address_list span").each(function() {
+				$("#write").val($("#write").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
+			});
+
+			$("#read").val("");
+			$("#read_list span.address_list span").each(function() {
+				$("#read").val($("#read").val() + $(this).text().replace(';', '') + '|' + $(this).attr("data") + ";");
+			});
+
+			sendForm("form_data", "", "/xiaowei/index.php?m=&c=form&a=folder_manage");
+		};
+
+		function showdata(result) {
+			for (var s in result.data) {
+				set_val(s, result.data[s]);
+			}
+			$("#admin_list span.address_list").html(contact_conv($("#admin").val()));
+			$("#write_list span.address_list").html(contact_conv($("#write").val()));
+			$("#read_list span.address_list").html(contact_conv($("#read").val()));
+			$("#folder_name").val($("#folder_list option[value='" + $("#pid").val() + "']").text());
+			$("#opmode").val("edit");
 		}
 
+		function select_auth() {
+			winopen("<?php echo U('popup/auth');?>", 560, 470);
+		}
+
+		function select_pid() {
+			winopen("<?php echo U('SystemFolder/winpop','controller='.CONTROLLER_NAME);?>", 560, 470);
+		}
 
 		$(document).ready(function() {
 			set_return_url();
+
+			$(document).on("click", ".inputbox .address_list a.del", function() {
+				$(this).parent().parent().remove();
+			});
+
+			$(".sub_left_menu .tree_menu  a").click(function() {
+				$(".sub_left_menu .tree_menu  a").attr("class", "");
+				$(this).attr("class", "active");
+				sendAjax("<?php echo U('SystemFolder/read');?>", "id=" + $(this).attr("node"), function(data) {
+					showdata(data);
+				});
+				return false;
+			});
+			// 双击添加到收件人 因后添加的数据 所以需要用live函数
+			$(".address_list span").on("dblclick", function() {
+				$(this).remove();
+			});
 		});
 	</script>
 

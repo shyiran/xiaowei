@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?><script>alert('请设置邮箱账号');location.href='/xiaowei/index.php?m=&c=mail_account&a=index'</script>

@@ -91,70 +91,129 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/search',array('name'=>'职位管理','search'=>'S'));?>
+	<?php echo W('PageHeader/adv_search',array('name'=>$folder_name,'search'=>'M'));?>
+	<form method="post" name="form_adv_search" id="form_adv_search">
+		<div class="adv_search panel panel-default  hidden"  id="adv_search">
+			<div class="panel-heading">
+				<div class="row">
+					<h4 class="col-xs-6">高级搜索</h4>
+					<div class="col-xs-6 text-right">
+						<a  class="btn btn-sm btn-info" onclick="submit_adv_search();">搜索</a>
+						<a  class="btn btn-sm " onclick="close_adv_search();">关闭</a>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_name">标题：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_name" name="li_name" >
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_content">内容：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_content" name="li_content" >
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="eq_user_name">登录人：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="eq_user_name" name="eq_user_name" >
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="be_create_time">登录时间：</label>
+					<div class="col-sm-8">
+						<div class="input-daterange input-group" >
+							<input type="text" class="input-sm form-control text-center" name="be_create_time" readonly="readonly"/>
+							<span class="input-group-addon">-</span>
+							<input type="text" class="input-sm form-control text-center" name="en_create_time" readonly="readonly"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="space-8"></div>
 	<div class="operate panel panel-default">
 		<div class="panel-body">
-			<div class="pull-right">
-				<a onclick="add()" class="btn btn-sm btn-primary">新增</a>
-				<a onclick="save()"  class="btn btn-sm btn-primary">保存</a>
-				|
-				<a onclick="del()"  class="btn btn-sm btn-danger">删除</a>
+			<div class="pull-left">
+				<ul class="nav nav-pills">
+					<li <?php if(($fid) == "all"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=all');?>">所有</a>
+					</li>
+					<li <?php if(($fid) == "no_finish"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=no_finish');?>">我未完成
+						<?php if(!empty($no_finish_task_count)): ?><span class="badge badge-pink"><?php echo ($no_finish_task_count); ?></span><?php endif; ?></a>
+					</li>
+					<li <?php if(($fid) == "dept"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=dept');?>">部门任务
+						<?php if(!empty($dept_task_count)): ?><span class="badge badge-pink"><?php echo ($dept_task_count); ?></span><?php endif; ?></a>
+					</li>
+					<li <?php if(($fid) == "no_assign"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=no_assign');?>" >不知让谁处理
+						<?php if(!empty($no_assign_task_count)): ?><span class="badge badge-pink"><?php echo ($no_assign_task_count); ?></span><?php endif; ?></a>
+					</li>					
+					<li <?php if(($fid) == "finished"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=finished');?>">我已完成</a>
+					</li>
+					<li <?php if(($fid) == "my_task"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=my_task');?>">我发布的</a>
+					</li>
+					<li <?php if(($fid) == "my_assign"): ?>class="active"<?php endif; ?>>
+						<a href="<?php echo U('folder','fid=my_assign');?>">我指派的</a>
+					</li>				
+				</ul>
 			</div>
+			<?php if($auth['write']): ?><div class="pull-right">
+					<a class="btn btn-sm btn-primary" onclick="add()">发布任务</a>
+				</div><?php endif; ?>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-4 sub_left_menu">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>名称</th>
-						<th>状态</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$data): $mod = ($i % 2 );++$i;?><tr id="<?php echo ($data["id"]); ?>">
-							<td><?php echo ($data["name"]); ?></td>
-							<td><?php echo (status($data["is_del"])); ?></td>
-						</tr><?php endforeach; endif; else: echo "" ;endif; ?>
-				</tbody>
-			</table>
-			<div class="pagination">
-				<?php echo ($page); ?>
-			</div>
-		</div>
-
-		<div class="col-sm-8 sub_content">
-			<form id="form_data" name="form_data"method="post" class="well form-horizontal clearfix">
-				<input type="hidden" name="id" id="id">
-				<input type="hidden" name="ajax" id="ajax" value="0">
-				<input type="hidden" name="opmode" id="opmode" value="">
-				
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="name">名称*：</label>
-					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="name" name="name" check="require" msg="请输入名称">
-					</div>
+	<div class="ul_table ul_table_responsive">
+		<ul>
+			<li class="thead">
+				<div class="pull-left">
+					<span class="col-8 ">编号</span>
+					<span class="col-8 ">发起人</span>
 				</div>
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="sort">排序：</label>
-					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="sort" name="sort" >
-					</div>
+				<div class="pull-right">
+					<span class="col-20 autocut">指派给</span>
+					<span class="col-12">发起时间</span>
+					<span class="col-12">期望完成时间</span>
+					<span class="col-6 ">状态</span>
+					<span class="col-6 text-center">操作</span>
 				</div>
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="is_del">状态：</label>
-					<div class="col-sm-8">
-						<select  class="form-control" name="is_del" id="is_del">
-							<option  value="0">启用</option>
-							<option value="1">禁用</option>
-						</select>
-					</div>
+				<div class="auto autocut">
+					标题
 				</div>
-			</form>
-		</div>
+			</li>
+			<?php if(empty($list)): ?><li class="no-data">
+					没找到数据
+				</li>
+				<?php else: ?>
+				<?php if(is_array($list)): foreach($list as $key=>$vo): ?><li class="tbody">
+						<div class="pull-left">
+							<span class="col-8 "><?php echo ($vo["task_no"]); ?></span>
+							<span class="col-8 "><?php echo ($vo["user_name"]); ?></span>
+						</div>
+						<div class="pull-right">
+							<span class="col-20 autocut">&nbsp;<?php echo (show_contact($vo["executor"])); ?></span>
+							<span class="col-12"><?php echo (to_date($vo["create_time"],'Y-m-d H:i')); ?>&nbsp;</span>
+							<span class="col-12"><?php echo (substr($vo["expected_time"],0,16)); ?>&nbsp;</span>
+							<span class="col-6"><?php echo (task_status($vo["status"])); ?>&nbsp;</span>
+							<span class="col-6 text-center">
+								<?php if(($vo["status"] < 30) and ($vo["user_id"] == $user_id)): ?><a href="<?php echo U('edit','id='.$vo['id']);?>">修改</a>&nbsp;<a href="<?php echo U('del','id='.$vo['id']);?>">删除</a><?php endif; ?></span>
+						</div>
+						<div class="auto autocut">
+							<a href="<?php echo U('read','id='.$vo['id']);?>"><?php echo ($vo["name"]); ?></a>
+						</div>
+					</li><?php endforeach; endif; ?>
+				<div class="pagination">
+					<?php echo ($page); ?>
+				</div><?php endif; ?>
+		</ul>
 	</div>
 
 				</div>
@@ -245,47 +304,13 @@
 		
 	<script type="text/javascript">
 		function add() {
-			winopen("<?php echo U('add');?>",560, 470);
-		};
-		
-		function del() {
-			var vars = $("#form_data").serialize();
-			ui_confirm('确定要删除吗?', function() {
-				sendAjax("<?php echo U('del');?>", vars, function(data) {
-					if (data.status) {
-						ui_alert(data.info, function() {
-							location.reload(true);
-						});
-					}
-				});
-			});
+			window.open("<?php echo U('add');?>", "_self");
 		}
-
-		function save() {
-			sendForm("form_data", "<?php echo U('save');?>");
-		}
-
-		function showdata(result) {
-			for (var s in result.data) {
-				set_val(s, result.data[s]);
-			}
-			$("#opmode").val("edit");
-		}
-
 
 		$(document).ready(function() {
 			set_return_url();
-			$(".sub_left_menu tbody tr").click(function() {
-				$(".sub_left_menu  tr.active").removeClass("active");
-				$(this).attr("class", "active");
-				sendAjax("<?php echo U('read');?>", "id=" + $(this).attr("id"), function(data) {
-					showdata(data);
-				});
-				return false;
-			});
 		});
 	</script>
-
 
 	</body>
 </html>

@@ -1,0 +1,3 @@
+[ 2017-07-22T17:43:18+08:00 ] 192.168.40.90 /xiaowei/index.php?m=&c=public&a=login
+ERR: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
+

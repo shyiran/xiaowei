@@ -91,87 +91,134 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/simple',array('name'=>'新建：'.$flow_type['name']));?>
-	<div class="operate panel panel-default">
-		<div class="panel-body">
-			<div class="pull-left">
-				<a onclick="go_return_url();" class="btn btn-sm btn-primary">返回</a>
-				<?php if(($flow_type["is_lock"]) == "0"): ?><a onclick="popup_confirm();"  class="btn btn-sm btn-primary">选择审批流程</a><?php endif; ?>
-			</div>
-			<div class="pull-right">
-				<a onclick="save(10);"  class="btn btn-sm btn-primary">存草稿</a>
-				<a onclick="save(20);"  id="post" class="btn btn-sm btn-primary">提交</a>
-			</div>
-		</div>
-	</div>
-	<form method='post' id="form_data" name="form_data" enctype="multipart/form-data" class="well form-horizontal">
-		<input type="hidden" id="ajax" name="ajax" value="1">
-
-		<input type="hidden" id="type" name="type" value="<?php echo ($flow_type["id"]); ?>">
-		<input type="hidden" id="opmode" name="opmode" value="add">
-		<input type="hidden" id="confirm" name="confirm" value="">
-		<input type="hidden" id="confirm_name" name="confirm_name" value="">
-		<input type="hidden" id="consult" name="consult" value="">
-		<input type="hidden" id="consult_name" name="consult_name" value="">
-		<input type="hidden" id="refer" name="refer" value="">
-		<input type="hidden" id="refer_name" name="refer_name" value="">
-		<input type="hidden" id="step" name="step" value="">
-
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="name">标题*：</label>
-			<div class="col-sm-10">
-				<input class="form-control" type="text" id="name" name="name" check="require" msg="请输入标题">
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-2 control-label" >文件编号：</label>
-			<div class="col-sm-10">
-				<p class="form-control-static">
-					<?php echo ($flow_type["doc_no_format"]); ?>
-				</p>
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-2 control-label" >审批：</label>
-			<div class="col-sm-10 address_list_box">
-				<p id="confirm_wrap" class="form-control-static address_list">
-					<?php echo ($flow_type["confirm_name"]); ?>
-				</p>
-			</div>
-		</div>
-
-		<div class="form-group">
-			<label class="col-sm-2 control-label" >协商：</label>
-			<div class="col-sm-10 address_list_box">
-				<p id="consult_wrap" class=" form-control-static address_list">
-					<?php echo ($flow_type["consult_name"]); ?>
-				</p>
-			</div>
-		</div>
-
-		<div class="form-group hidden">
-			<label class="col-sm-2 control-label" >抄送：</label>
-			<div class="col-sm-10">
-				<p id="refer_wrap" class="form-control-static address_list">
-					<?php echo ($flow_type["refer_name"]); ?>
-				</p>
-			</div>
-		</div>
-		<?php if(is_array($field_list)): $i = 0; $__LIST__ = $field_list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i; echo W('UserDefineField/edit',array($vo)); endforeach; endif; else: echo "" ;endif; ?>
-		<?php if(($flow_type["is_show"]) == "1"): ?><div class="form-group">
-				<div class="col-xs-12">
-					<textarea class="editor" id="content" name="content" style="width:100%;height:300px;"><?php echo ($flow_type["content"]); ?></textarea>
+	<?php echo W('PageHeader/adv_search',array('name'=>$folder_name,'search'=>'M'));?>
+	<form method="post" name="form_adv_search" id="form_adv_search">
+		<div class="adv_search panel panel-default  hidden"  id="adv_search">
+			<div class="panel-heading">
+				<div class="row">
+					<h4 class="col-xs-6">高级搜索</h4>
+					<div class="col-xs-6 text-right">
+						<a  class="btn btn-sm btn-info" onclick="submit_adv_search();">搜索</a>
+						<a  class="btn btn-sm " onclick="close_adv_search();">关闭</a>
+					</div>
 				</div>
-			</div><?php endif; ?>
-		<div class="form-group">
-			<label class="col-sm-2 control-label" >附件：</label>
-			<div class="col-sm-10">
-				<?php echo W('FileUpload/add');?>
+			</div>
+			<div class="panel-body">
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_name">标题：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_name" name="li_name" >
+					</div>
+				</div>
+
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="li_content">内容：</label>
+					<div class="col-sm-8">
+						<input  class="form-control" type="text" id="li_content" name="li_content" >
+					</div>
+				</div>
+
+				<?php if(in_array(($folder), explode(',',"darftbox,outbox"))): ?><div class="form-group col-sm-6">
+						<label class="col-sm-4 control-label" for="li_to">收件人：</label>
+						<div class="col-sm-8">
+							<input  class="form-control" type="text" id="li_to" name="li_to" >
+						</div>
+					</div>
+					<?php else: ?>
+					<div class="form-group col-sm-6">
+						<label class="col-sm-4 control-label" for="li_from">发件人：</label>
+						<div class="col-sm-8">
+							<input  class="form-control" type="text" id="li_from" name="li_from" >
+						</div>
+					</div><?php endif; ?>
+
+				<div class="form-group col-sm-6">
+					<label class="col-sm-4 control-label" for="be_create_time">时间：</label>
+					<div class="col-sm-8">
+						<div class="input-daterange input-group" >
+							<input type="text" class="input-sm form-control text-center" name="be_create_time" readonly="readonly"/>
+							<span class="input-group-addon">-</span>
+							<input type="text" class="input-sm form-control text-center" name="en_create_time" readonly="readonly"/>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</form>
+	<div class="operate panel panel-default">
+		<div class="panel-body">
+			<div class="pull-left">
+				<a onclick="mark('del');" class="btn btn-sm btn-warning">删除</a>
+				<a onclick="mark('del_forever');" class="btn btn-sm btn-danger">彻底删除</a>
+				<a onclick="forword();" class="btn btn-sm btn-primary">转发</a>
+				<a onclick="mark('spam');" class="btn btn-sm btn-primary hidden">举报</a>
+				<div class="btn-group">
+					<a class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" href="#"> 标记为 <span class="fa fa-caret-down"></span> </a>
+					<ul class="dropdown-menu">
+						<li onclick="mark('readed');">
+							<a>已读</a>
+						</li>
+						<li onclick="mark('unread');">
+							<a>未读</a>
+						</li>
+					</ul>
+				</div>
+				<div class="btn-group" id="move_to">
+					<a class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" href="#"> 转移到 <span class="fa fa-caret-down"></span> </a>
+					<ul class="dropdown-menu">
+						<?php echo ($folder_list); ?>
+					</ul>
+				</div>
+			</div>
+			<div class="pull-right">
+				<a onclick="receve();" class="btn btn-sm btn-primary">收信</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="ul_table ul_table_responsive">
+		<ul>
+			<li class="thead" >
+				<label class="inline pull-left col-3">
+					<input class="ace" type="checkbox" name="id-toggle-all" id="id-toggle-all" />
+					<span class="lbl"></span></label>
+				<span class="col-20 pull-left">
+					<?php if(in_array(($folder), explode(',',"darftbox,outbox"))): ?>收件人
+						<?php else: ?>
+						发件人<?php endif; ?></span>
+				<span class="col-9 pull-right " >时间</span>
+				<span class="autocut auto">标题</span>
+			</li>
+			<?php if(empty($list)): ?><li class="no-data">
+					没找到数据
+				</li>
+				<?php else: ?>
+				<form method="post" action="" name="form_data" id="form_data">
+					<?php if(is_array($list)): foreach($list as $key=>$vo): ?><li class="tbody <?php if(($vo["read"]) == "1"): ?>normal<?php endif; if(($vo["read"]) == "0"): ?>bold<?php endif; ?>" >
+							<label class="inline pull-left col-3">
+								<input class="ace" type="checkbox" name="id[]" value="<?php echo ($vo["id"]); ?>" />
+								<span class="lbl"></span></label>
+							<span class="col-20 autocut pull-left">
+								<?php if(in_array(($folder), explode(',',"darftbox,outbox"))): echo (show_contact($vo["to"])); ?>
+									<?php else: ?>
+									<?php echo (show_contact($vo["from"])); endif; ?> </span>
+							<span  class="col-9 pull-right" ><?php echo (to_date($vo["create_time"],'Y-m-d')); ?></span>
+							<span class="autocut auto">
+								<?php if(!empty($vo['add_file'])): ?><i class="fa fa-paperclip"></i>
+									<?php else: ?>
+									<i class="fa fa-paperclip" style="text-indent:-9999px;"></i><?php endif; ?>
+								<?php if(in_array(($folder), explode(',',"darftbox"))): ?><a  title="<?php echo (htmlspecialchars($vo["name"])); ?>" href="<?php echo U('edit','id='.$vo['id']);?>"> <?php echo ($vo["name"]); ?>&nbsp;&nbsp;&nbsp;
+									<?php if((strlen($vo["name"])) == "0"): ?>无标题<?php endif; ?></a>
+									<?php else: ?>
+									<a title="<?php echo (htmlspecialchars($vo["name"])); ?>" href="<?php echo U('read','id='.$vo['id']);?>"> <?php echo ($vo["name"]); ?>&nbsp;&nbsp;&nbsp;
+									<?php if((strlen($vo["name"])) == "0"): ?>无标题<?php endif; ?> </a><?php endif; ?> </span>
+						</li><?php endforeach; endif; ?>
+				</form>
+				<div class="pagination">
+					<?php echo ($page); ?>
+				</div><?php endif; ?>
+		</ul>
+	</div>
 
 				</div>
 			</div>
@@ -260,70 +307,98 @@
 </script>
 		
 	<script type="text/javascript">
-		$(document).ready(function() {
-			udf_field.init();
-
-			<?php if($flow_type['is_lock']==0){ ?>
-			$('.address_list').on('mouseenter', 'span', function() {
-				$(this).find('i').remove();
-				$(this).append('<i class="fa fa-times"></i>');	 
-			});
-			$('.address_list').on('mouseleave', 'span', function() {
-				$i = $(this).find('i');
-				$i.removeClass('fa-times');
-				$i.addClass('fa-arrow-right');
-				$(".address_list span:last i").attr('class', 'fa');
-			});
-
-			$('.address_list').on('click', 'i', function() {
-				$(this).parents('span').remove();
-				$(".address_list span:last i").attr('class', 'fa');
-			});
-			<?php } ?>
-		});
-		
-		function save(step) {
-			$("#confirm").val("");
-			$("#confirm_wrap  span").each(function() {
-				$("#confirm").val($("#confirm").val() + $(this).attr("data") + '|');
-			});
-
-			$("#confirm_name").val($("#confirm_wrap").html());
-
-			$("#consult").val("");
-			$("#consult_wrap  span").each(function() {
-				$("#consult").val($("#consult").val() + $(this).attr("data") + '|');
-			});
-			$("#consult_name").val($("#consult_wrap").html());
-
-			if ($("#confirm").val().length < 2) {
-				ui_error('请选择审批流程');
-				return false;
+		function mark(action) {
+			var vars = $("#form_data").serialize();
+			switch (action) {
+			case "readed":
+				sendAjax("<?php echo U('mark','action=readed');?>", vars, function(data) {
+					if (data.status) {
+						$("input[name='id[]']:checked").each(function() {
+							$(this).parents("li").removeClass("bold");
+							$(this).parents("li").addClass("normal");
+						});
+						$("input[name='id[]']:checked").prop('checked', false);
+						$("#id-toggle-all").prop('checked', false);
+					}
+				});
+				break;
+			case "unread":
+				sendAjax("<?php echo U('mark','action=unread');?>", vars, function(data) {
+					if (data.status) {
+						$("input[name='id[]']:checked").each(function() {
+							$(this).parents("li").removeClass("normal");
+							$(this).parents("li").addClass("bold");
+						});
+						$("input[name='id[]']:checked").prop('checked', false);
+						$("#id-toggle-all").prop('checked', false);
+					}
+				});
+				break;
+			case "del":
+				sendAjax("<?php echo U('mark','action=del');?>", vars, function(data) {
+					if (data.status) {
+						ui_alert(data.info, function() {
+							location.reload(true);
+						});
+					}
+				});
+				break;
+			case "del_forever":
+				ui_confirm('确定要删除吗?', function() {
+					sendAjax("<?php echo U('mark','action=del_forever');?>", vars, function(data) {
+						if (data.status) {
+							ui_alert(data.info, function() {
+								location.reload(true);
+							});
+						}
+					});
+				});
+				break;
+			case "spam":
+				sendAjax("<?php echo U('mark','action=spam');?>", vars, function(data) {
+					if (data.status) {
+						ui_alert(data.info, function() {
+							location.reload(true);
+						});
+					}
+				});
+				break;
+			default:
 			}
-			$("#step").val(step);
-			sendForm("form_data", "<?php echo U('save');?>", "<?php echo U('index');?>");
-            var t=3;
-			var int=setInterval(function(){
-				t--;
-				if(t==0){
-					$("#post").html("提交")
-					$("#post").attr("onclick","save(20)");
-					 clearInterval(int);
-	
-				}else{
-				  $("#post").attr("onclick","javascript:alert('不能重复提交！')");
-				  $("#post").html("重新提交("+t+")")	
+		}
+
+		function forword() {
+			if ($("input[name='id[]']:checkbox:checked").length == 1) {
+				window.open(fix_url('<?php echo U("reply");?>?id=' + $("input[name='id[]']:checkbox:checked:first").val() + "&type=forward"), "_self");
+			} else {
+				ui_error("请选择一封要转发的邮件");
+				return false;
+			};
+		}
+
+		function receve() {
+			sendAjax("<?php echo U('receve');?>");
+		}
+
+		function move_to(val) {
+			var vars = $("#form_data").serialize();
+			sendAjax("<?php echo U('mark','action=move_to');?>", 'val=' + val + '&' + vars, function(data) {
+				if (data.status) {
+					ui_alert(data.info, function() {
+						location.reload(true);
+					});
 				}
-			},1000)
-			
+			});
 		}
 
-		function popup_confirm() {
-			winopen("<?php echo U('popup/confirm');?>",560, 470);
-		}
 
+		$(document).ready(function() {
+			$("#move_to li").click(function() {
+				move_to($(this).attr("id"));
+			});
+			set_return_url();
+		});
 	</script>
-
 
 	</body>
 </html>

@@ -91,87 +91,105 @@
 				</div>
 				<div class="wrapper wrapper-content">
 					
-	<?php echo W('PageHeader/simple',array('name'=>'群组管理','search'=>'N'));?>
-
+	<?php echo W('PageHeader/simple',array('name'=>'基本资料','search'=>'N'));?>
 	<div class="operate panel panel-default">
 		<div class="panel-body">
-
 			<div class="pull-right">
-				<a onclick="add()" class="btn btn-sm btn-primary">新增</a>
-				<a onclick="save()" class="btn btn-sm btn-primary">保存</a>
-				|
-				<a onclick="del()" class="btn btn-sm btn-danger">删除</a>
+				<a onclick="save()"  class="btn btn-sm btn-primary">保存</a>
 			</div>
 		</div>
 	</div>
-	<!-- 功能操作区域结束 -->
-	<!-- 列表显示区域  -->
 	<div class="row">
-		<div class="col-sm-4 sub_left_menu ">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>名称</th>
-						<th>是否公开</th>
-						<th>状态</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$data): $mod = ($i % 2 );++$i;?><tr id="<?php echo ($data["id"]); ?>">
-							<td class="click"><span><?php echo ($data["name"]); ?></span></td>
-							<td class="click"><span><?php echo (is_public($data["is_public"])); ?></span></td>
-							<td class="click"><span><?php echo (status($data["is_del"])); ?></span></td>
-							<td><a href="<?php echo U('user',array('id'=>$data['id']));?>">管理成员</a></td>
-						</tr><?php endforeach; endif; else: echo "" ;endif; ?>
-				</tbody>
-			</table>
-
-		</div>
-		<div class="col-sm-8 last sub_content">
-			<form id="form_data" name="form_data"method="post" class="well form-horizontal clearfix">
-				<input type="hidden" name="id" id="id">
+		<div class="col-xs-12">
+			<form id="form_data" name="form_data" method="post" class="form-horizontal">
+				<input type="hidden" name="id" id="id"  value="<?php echo ($vo["id"]); ?>">
+				<input type="hidden" name="pic" id="pic" value="<?php echo ($vo["pic"]); ?>">
 				<input type="hidden" name="ajax" id="ajax" value="0">
 				<input type="hidden" name="opmode" id="opmode" value="">
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="name">名称*：</label>
-					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="name" name="name" check="require" msg="请输入名称">
-					</div>
-				</div>
-
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="sort">排序：</label>
-					<div class="col-sm-8">
-						<input class="form-control"  type="text" id="sort" name="sort" >
-					</div>
-				</div>
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="is_public">是否公开：</label>
-					<div class="col-sm-8">
-						<select  class="form-control" name="is_public" id="is_public">
-							<option  value="0">私有</option>
-							<option value="1">公开</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="is_del">状态：</label>
-					<div class="col-sm-8">
-						<select  class="form-control" name="is_del" id="is_del">
-							<option  value="0">启用</option>
-							<option value="1">禁用</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group col-xs-12">
-					<label class="col-sm-4 control-label" for="remark" >备注：</label>
-					<div class="col-sm-8" >
-						<textarea class="form-control" name="remark" id="remark" rows="5" class="col-xs-12" ></textarea>
-					</div>
-				</div>
+				<table class="table table-bordered" >
+					<tr>
+						<th class="col-10">
+						<nobr>
+							员工编号
+						</nobr></th>
+						<td colspan="2" class="col-30">
+						<p class="form-control-static">
+							<?php echo ($vo["emp_no"]); ?>
+						</p></td>
+						<td rowspan="3" class="col-20"><img class="img-thumbnail col-12" id="emp_pic" src="/xiaowei/<?php echo (get_emp_pic($vo["id"])); ?>?t=<?php echo time();?>" onerror="javascript:this.src='/Uploads/emp_pic/no_avatar.jpg'"></td>
+					</tr>
+					<tr>
+						<th>姓名</th>
+						<td colspan="2">
+						<p class="form-control-static">
+							<?php echo ($vo["name"]); ?>
+						</p></td>
+					</tr>
+					<tr>
+						<th>性别</th>
+						<td colspan="2">
+						<select name="sex" id="sex" class="form-control col-10">
+							<option  value="male">男</option>
+							<option value="female">女</option>
+						</select></td>
+					</tr>
+					<tr>
+						<th>生日</th>
+						<td colspan="2">
+						<input type="text" id="birthday" name="birthday" readonly="readonly" class="input-date form-control" value="<?php echo ($vo["birthday"]); ?>">
+						</td>
+						<td colspan="2"><a onclick="select_avatar();" class="btn btn-sm btn-primary">上传头像</a></td>
+					</tr>
+					<tr>
+						<th>部门*</th>
+						<td class="col-20">
+						<p class="form-control-static">
+							<?php echo ($vo["dept_name"]); ?>
+						</p></td>
+						<th class="col-10">职位</th>
+						<td>
+						<p class="form-control-static">
+							<?php echo ($vo["position_name"]); ?>
+					
+						</p></td>
+					</tr>
+					<tr>
+						<th>
+						<nobr>
+							办公室电话
+						</nobr></th>
+						<td>
+						<input type="text" id="office_tel" name="office_tel" class="form-control" value="<?php echo ($vo["office_tel"]); ?>">
+						</td>
+						<th>
+						<nobr>
+							移动电话
+						</nobr></th>
+						<td>
+						<input type="text" id="mobile_tel" name="mobile_tel" class="form-control" value="<?php echo ($vo["mobile_tel"]); ?>">
+						</td>
+					</tr>
+					<tr>
+					<tr>
+						<th>电子邮箱</th>
+						<td colspan="3">
+						<p class="form-control-static">
+							<?php echo ($vo["email"]); ?>
+						</p></td>
+					</tr>
+					<tr>
+						<th>
+						<nobr>
+							负责业务
+						</nobr></th>
+						<td colspan="3">
+						<input type="text" id="duty" name="duty" class="form-control" value="<?php echo ($vo["duty"]); ?>">
+						</td>
+					</tr>
+				</table>
 			</form>
 		</div>
+	</div>
 
 				</div>
 			</div>
@@ -260,48 +278,21 @@
 </script>
 		
 	<script type="text/javascript">
-		function add() {
-			winopen("<?php echo U('add');?>",560, 470);
+		function reset_pwd() {
+		winopen("<?php echo U('password');?>",560, 470);
 		}
-		
-		function del() {
-			var vars = $("#form_data").serialize();
-			ui_confirm('确定要删除吗?', function() {
-				sendAjax("<?php echo U('del');?>", vars, function(data) {
-					if (data.status) {
-						ui_alert(data.info, function() {
-							location.reload(true);
-						});
-					}
-				});
-			});
+		function select_avatar() {
+		winopen("<?php echo U('popup/avatar');?>?id="+$("#id").val(),560, 470);
 		}
-
 		function save() {
-			sendForm("form_data", "<?php echo U('save');?>");
+			sendForm("form_data","<?php echo U('save');?>","<?php echo U('index');?>");
 		}
-
-		function showdata(result) {
-			for (var s in result.data) {
-				set_val(s, result.data[s]);
-			}
-			$("#opmode").val("edit");
-		}
-
-
 		$(document).ready(function() {
-			set_return_url();
-			$(".sub_left_menu tbody tr td.click").click(function() {
-				$(".sub_left_menu  tr.active").removeClass("active");
-				$tr = $(this).parents('tr');
-				$tr.attr("class", "active");
-				sendAjax("<?php echo U('read');?>", "id=" + $tr.attr("id"), function(data) {
-					showdata(data);
-				});
-				return false;
-			});
+		set_return_url();
+		set_val('sex','<?php echo ($vo["sex"]); ?>');
 		});
 	</script>
+
 
 	</body>
 </html>
